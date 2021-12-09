@@ -4,16 +4,16 @@
 
 #include <iostream>
 
-static const int CARTRIDGE_ROM_END = 0x8000;
-static const int CARTRIDGE_RAM_START = 0xA000;
-static const int CARTRIDGE_RAM_END = 0xC000;
-
 byte_t NoMBC::read(Cartridge *cartridge, addr_t addr)
 {
-	if (addr < CARTRIDGE_ROM_END) {
+	if (addr < 0x8000) {
 		return cartridge->cartridge_data.at(addr);
-	} else if (CARTRIDGE_RAM_START <= addr && addr < CARTRIDGE_RAM_END) {
-		return cartridge->cartridge_ram.at(addr  - CARTRIDGE_RAM_START);
+	} else if (0xA000 <= addr && addr < 0xC000) {
+		if (addr - 0xA000 < cartridge->ram_size()) {
+			return cartridge->cartridge_ram.at(addr - 0xA000);
+		} else {
+			return 0xFF;
+		}
 	} else {
 		fprintf(stderr, "invalid addr %02X in read no MBC\n", addr);
 		return 0xFF;
@@ -22,8 +22,10 @@ byte_t NoMBC::read(Cartridge *cartridge, addr_t addr)
 
 void NoMBC::write(Cartridge *cartridge, addr_t addr, byte_t data)
 {
-	if (CARTRIDGE_RAM_START <= addr && addr < CARTRIDGE_RAM_END) {
-		cartridge->cartridge_ram.at(addr -  CARTRIDGE_RAM_START) = data;
+	if (0xA000 <= addr && addr < 0xC000) {
+		if (addr - 0xA000 < cartridge->ram_size()) {
+			cartridge->cartridge_ram.at(addr - 0xA000) = data;
+		}
 	} else {
 		fprintf(stderr, "ignoring addr %02X in write no MBC\n", addr);
 	}

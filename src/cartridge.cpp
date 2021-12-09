@@ -3,6 +3,7 @@
 #include "MBC/mbc.h"
 #include "MBC/nombc.h"
 #include "MBC/mbc1.h"
+#include "MBC/mbc3.h"
 
 #include <fstream>
 #include <iostream>
@@ -39,15 +40,22 @@ void Cartridge::set_mbc()
 {
 	byte_t cartridge_type = read(0x147);
 	switch (cartridge_type) {
-		case 0:
-		case 8:
-		case 9:
+		case 0x0:
+		case 0x8:
+		case 0x9:
 			mbc = std::make_unique<NoMBC>();
 			break;
-		case 1:
-		case 2:
-		case 3:
+		case 0x1:
+		case 0x2:
+		case 0x3:
 			mbc = std::make_unique<MBC1>();
+			break;
+		case 0x0F:
+		case 0x10:
+		case 0x11:
+		case 0x12:
+		case 0x13:
+			mbc = std::make_unique<MBC3>();
 			break;
 		default:
 			throw std::runtime_error("ERROR while reading cartridge: cartridge type " + std::to_string(cartridge_type) + " is not supported");
