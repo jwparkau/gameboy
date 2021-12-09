@@ -36,7 +36,7 @@ void PPU::tick_tcycle()
 		dot_counter = 0;
 		window_line = 0;
 		pixels_pushed = 0;
-		write(RLY, 0);
+		direct_write(RLY, 0);
 		set_mode(HBLANK);
 		return;
 	}
@@ -83,8 +83,8 @@ void PPU::tick_tcycle()
 		dot_counter = 0;
 
 		inc_LY();
-		if (LY() == read(RLYC)) {
-			if (read(RSTAT) & LYC_INT) {
+		if (LY() == direct_read(RLYC)) {
+			if (direct_read(RSTAT) & LYC_INT) {
 				memory->request_interrupt(INT_STAT);
 			}
 		}
@@ -109,9 +109,9 @@ void PPU::tick_tcycle()
 	}
 
 	if (LY() == read(RLYC)) {
-		write(RSTAT, read(RSTAT) | LYC_EQUAL);
+		direct_write(RSTAT, direct_read(RSTAT) | LYC_EQUAL);
 	} else {
-		write(RSTAT, read(RSTAT) & ~LYC_EQUAL);
+		direct_write(RSTAT, direct_read(RSTAT) & ~LYC_EQUAL);
 	}
 }
 
@@ -128,10 +128,10 @@ void PPU::do_pixel_draw()
 
 		if (lcdc & BG_ENABLE) {
 			bool draw_window = false;
-			byte_t wx = read(RWX);
-			byte_t wy = read(RWY);
-			byte_t scx = read(RSCX);
-			byte_t scy = read(RSCY);
+			byte_t wx = direct_read(RWX);
+			byte_t wy = direct_read(RWY);
+			byte_t scx = direct_read(RSCX);
+			byte_t scy = direct_read(RSCY);
 
 
 			if (lcdc & WINDOW_ENABLE) {
@@ -213,9 +213,9 @@ void PPU::do_pixel_draw()
 		}
 
 		if (sprite_colour > 0 && (!bg_priority || bg_colour == 0)) {
-			set_pixel(x, y, sprite_colour, (palette_number) ? read(ROBP1) : read(ROBP0));
+			set_pixel(x, y, sprite_colour, (palette_number) ? direct_read(ROBP1) : direct_read(ROBP0));
 		} else {
-			set_pixel(x, y, bg_colour, read(RBGP));
+			set_pixel(x, y, bg_colour, direct_read(RBGP));
 		}
 
 	}
@@ -274,17 +274,17 @@ void PPU::do_oam_scan()
 
 enum ppu_mode PPU::get_mode()
 {
-	return static_cast<enum ppu_mode>(read(RSTAT) & 0x3);
+	return static_cast<enum ppu_mode>(direct_read(RSTAT) & 0x3);
 }
 
 void PPU::set_mode(enum ppu_mode mode)
 {
-	write(RSTAT, (read(RSTAT) & ~0x3) + mode);
+	direct_write(RSTAT, (direct_read(RSTAT) & ~0x3) + mode);
 }
 
 byte_t PPU::LY()
 {
-	return read(RLY);
+	return direct_read(RLY);
 }
 
 void PPU::inc_LY()
@@ -293,17 +293,17 @@ void PPU::inc_LY()
 	if (x > 153) {
 		x = 0;
 	}
-	write(RLY, x);
+	direct_write(RLY, x);
 }
 
 byte_t PPU::LCDC()
 {
-	return read(RLCDC);
+	return direct_read(RLCDC);
 }
 
 byte_t PPU::STAT()
 {
-	return read(RSTAT);
+	return direct_read(RSTAT);
 }
 
 bool PPU::get_lcdc_flag(enum lcdc_flag flag)
@@ -319,4 +319,14 @@ byte_t PPU::read(addr_t addr)
 void PPU::write(addr_t addr, byte_t data)
 {
 	memory->write(addr, data);
+}
+
+byte_t PPU::direct_read(addr_t addr)
+{
+	return memory->direct_read(addr);
+}
+
+void PPU::direct_write(addr_t addr, byte_t data)
+{
+	memory->direct_write(addr, data);
 }

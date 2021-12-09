@@ -67,6 +67,8 @@ class PPU {
 
 		byte_t read(addr_t addr);
 		void write(addr_t addr, byte_t data);
+		byte_t direct_read(addr_t addr);
+		void direct_write(addr_t addr, byte_t data);
 
 		enum ppu_mode get_mode();
 		void set_mode(enum ppu_mode mode);

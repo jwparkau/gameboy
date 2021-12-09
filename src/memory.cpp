@@ -72,7 +72,12 @@ void Memory::write(addr_t addr, byte_t data)
 		if (addr == RDMA) {
 			do_dma_transfer(data * 0x100);
 		}
-		memory.at(addr) = data;
+
+		if (addr == RSTAT) {
+			memory.at(addr) = (data & ~0x3) + (memory.at(addr) & 0x3);
+		} else {
+			memory.at(addr) = data;
+		}
 	}
 		
 }
