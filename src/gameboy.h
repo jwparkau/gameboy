@@ -31,14 +31,14 @@ enum input_buttons : char {
 
 class GameBoy {
 	public:
-		Platform *platform = nullptr;
+		Platform *platform{};
 		bool running = false;
 
 		std::unique_ptr<Cartridge> cartridge;
 		std::unique_ptr<Memory> memory;
-		std::unique_ptr<CPU> cpu;
 		std::unique_ptr<Timer> timer;
 		std::unique_ptr<PPU> ppu;
+		std::unique_ptr<CPU> cpu;
 
 		GameBoy(Platform *platform);
 		~GameBoy();

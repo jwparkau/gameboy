@@ -16,15 +16,14 @@
 
 static const int CYCLES_PER_FRAME = 70224;
 
-GameBoy::GameBoy(Platform *platform)
+GameBoy::GameBoy(Platform *platform) :
+	platform(platform),
+	cartridge(std::make_unique<Cartridge>()),
+	memory(std::make_unique<Memory>(cartridge.get())),
+	timer(std::make_unique<Timer>(memory.get())),
+	ppu(std::make_unique<PPU>(memory.get())),
+	cpu(std::make_unique<CPU>(this))
 {
-	this->platform = platform;
-
-	cartridge = std::make_unique<Cartridge>();
-	memory = std::make_unique<Memory>(cartridge.get());
-	timer = std::make_unique<Timer>(memory.get());
-	cpu = std::make_unique<CPU>(this);
-	ppu = std::make_unique<PPU>(memory.get());
 }
 
 GameBoy::~GameBoy() = default;
@@ -45,7 +44,6 @@ void GameBoy::start_emulation()
 	int cycles = 0;
 
 	uint64_t frame_start = 0;
-	uint64_t frame_end = 0;
 
 	uint64_t freq = SDL_GetPerformanceFrequency();
 	uint64_t frame_duration = freq / 60;
@@ -72,7 +70,7 @@ void GameBoy::start_emulation()
 			cycles += cpu->step_instruction();
 		}
 
-		platform->render(ppu->framebuffer);
+		platform->render(ppu->framebuffer.data());
 
 		uint64_t frame_time = SDL_GetPerformanceCounter() - frame_start;
 		//std::cerr << "instantaneous fps: " << (double) freq / frame_time << "\n";

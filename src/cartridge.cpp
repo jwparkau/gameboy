@@ -10,10 +10,9 @@
 #include <stdexcept>
 #include <string>
 
-Cartridge::Cartridge()
+Cartridge::Cartridge() :
+	mbc(std::make_unique<NoMBC>())
 {
-	// TODO: make proper MBC by reading the ROM!
-	mbc = std::make_unique<NoMBC>();
 }
 
 Cartridge::~Cartridge() = default;

@@ -26,20 +26,19 @@ class GameBoy;
 
 class CPU {
 	public:
-		void dump_state();
-
-		std::array<byte_t, 8> REGISTER {};
+		std::array<byte_t, 8> REGISTER{};
 		std::uint16_t SP = 0;
 		std::uint16_t PC = 0;
 		bool IME = true;
 		bool ei_delay = false;
 		bool halted = false;
-		bool first = true;
+		bool first = false;
 
-		GameBoy *gameboy = nullptr;
+		GameBoy *gameboy{};
 
 		CPU(GameBoy *gameboy);
 
+		void dump_state();
 		void set_fake_boot_dmg_state();
 
 		int step_instruction();

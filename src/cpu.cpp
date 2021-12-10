@@ -6,9 +6,9 @@
 #include <iostream>
 #include <stdexcept>
 
-CPU::CPU(GameBoy *gameboy)
+CPU::CPU(GameBoy *gameboy) :
+	gameboy(gameboy)
 {
-	this->gameboy = gameboy;
 }
 
 void CPU::dump_state()

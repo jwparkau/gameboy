@@ -12,10 +12,10 @@ class Timer {
 		int div_tcycles = 0;
 		int tima_tcycles = 0;
 
-		Memory *memory = nullptr;
+		Memory *memory{};
 
 		Timer(Memory *memory);
-		~Timer();
+
 		void tick_mcycle();
 		void inc(addr_t r);
 };

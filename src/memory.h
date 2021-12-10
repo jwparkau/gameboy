@@ -47,14 +47,14 @@ class Cartridge;
 
 class Memory {
 	public:
-		std::array<byte_t, 0x10000> memory;
+		std::array<byte_t, 0x10000> memory{};
 		std::vector<byte_t> bootrom_data;
-		Cartridge *cartridge = nullptr;
+		Cartridge *cartridge{};
 		bool timer_written = false;
 		bool bootrom_mapped = true;
 
-		byte_t action_buttons = 0xF;
-		byte_t direction_buttons = 0xF;
+		byte_t action_buttons{0xF};
+		byte_t direction_buttons{0xF};
 
 		Memory(Cartridge *Cartridge);
 

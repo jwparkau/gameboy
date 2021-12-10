@@ -55,7 +55,7 @@ byte_t MBC3::read_ram(Cartridge *cartridge, addr_t offset)
 		return 0xFF;
 	}
 
-	addr_t real_offset = translate_ram_addr(cartridge, offset);
+	addr_t real_offset = translate_ram_addr(offset);
 	if (real_offset >= cartridge->ram_size()) {
 		return 0xFF;
 	}
@@ -69,7 +69,7 @@ void MBC3::write_ram(Cartridge *cartridge, addr_t offset, byte_t data)
 		return;
 	}
 
-	addr_t real_offset = translate_ram_addr(cartridge, offset);
+	addr_t real_offset = translate_ram_addr(offset);
 	if (real_offset >= cartridge->ram_size()) {
 		return;
 	}
@@ -77,7 +77,7 @@ void MBC3::write_ram(Cartridge *cartridge, addr_t offset, byte_t data)
 	cartridge->cartridge_ram.at(real_offset) = data;
 }
 
-addr_t MBC3::translate_ram_addr(Cartridge *cartridge, addr_t offset)
+addr_t MBC3::translate_ram_addr(addr_t offset)
 {
 	return ram_bank * 8192 + offset;
 }

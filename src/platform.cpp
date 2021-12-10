@@ -38,10 +38,6 @@ void Platform::init_platform()
 	}
 }
 
-Platform::Platform()
-{
-}
-
 Platform::~Platform()
 {
 	if (texture) {

@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+#include <array>
 #include <cstdint>
 #include <queue>
 #include <vector>
@@ -55,13 +56,13 @@ class PPU {
 		int window_line = 0;
 		int pixels_pushed = 0;
 		bool lcd_was_enabled = true;
-		uint32_t framebuffer[144*160];
+		std::array<std::uint32_t, 160*144> framebuffer{};
 
-		Memory *memory = nullptr;
+		Memory *memory{};
 		std::vector<Sprite> scanline_sprites;
-		
 
 		PPU(Memory *memory);
+
 		void tick_tcycle();
 		void tick_mcycle();
 

@@ -9,15 +9,14 @@ enum input_buttons : char;
 
 class Platform {
 	public:
-		SDL_Window *window = nullptr;
-		SDL_Renderer *renderer = nullptr;
-		SDL_Texture *texture = nullptr;
+		SDL_Window *window{};
+		SDL_Renderer *renderer{};
+		SDL_Texture *texture{};
 
 		int width = 160;
 		int height = 144;
 		int scale_factor = 4;
 
-		Platform();
 		~Platform();
 
 		void init_platform();

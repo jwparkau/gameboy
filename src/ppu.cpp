@@ -15,12 +15,10 @@ static const uint32_t REAL_COLOURS[4] =  {
 	0xFF000000
 };
 
-PPU::PPU(Memory *memory)
+PPU::PPU(Memory *memory) :
+	memory(memory)
 {
-	this->memory = memory;
-	for (int i = 0; i < 144 * 160; i++) {
-		framebuffer[i] = 0xFFFFFFFF;
-	}
+	framebuffer.fill(0xFFFFFFFF);
 }
 
 void PPU::tick_mcycle()
@@ -235,7 +233,7 @@ int PPU::get_colour_at(addr_t tiledata, byte_t x, byte_t y)
 void PPU::set_pixel(byte_t x, byte_t y, byte_t colour_index, byte_t palette)
 {
 	int colour = palette >> (2*colour_index) & 0x3;
-	framebuffer[y*160 + x] = REAL_COLOURS[colour];
+	framebuffer.at(y*160 + x) = REAL_COLOURS[colour];
 }
 
 

@@ -18,9 +18,9 @@ static const int IE_END = 0x10000;
 
 static int MAX_BOOTROM_SIZE = 2048;
 
-Memory::Memory(Cartridge *cartridge)
+Memory::Memory(Cartridge *cartridge) :
+	cartridge(cartridge)
 {
-	this->cartridge = cartridge;
 }
 
 byte_t Memory::read(addr_t addr)

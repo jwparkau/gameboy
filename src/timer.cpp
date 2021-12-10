@@ -4,14 +4,9 @@
 
 #include <iostream>
 
-Timer::Timer(Memory *memory)
+Timer::Timer(Memory *memory) :
+	memory(memory)
 {
-	this->memory = memory;
-}
-
-Timer::~Timer()
-{
-
 }
 
 void Timer::tick_mcycle()

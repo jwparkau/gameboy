@@ -14,7 +14,7 @@ class MBC3 : public MBC {
 
 		byte_t read_ram(Cartridge *cartridge, addr_t offset);
 		void write_ram(Cartridge *cartridge, addr_t offset, byte_t data);
-		addr_t translate_ram_addr(Cartridge *cartridge, addr_t offset);
+		addr_t translate_ram_addr(addr_t offset);
 };
 
 #endif
