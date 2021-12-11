@@ -61,6 +61,7 @@ void GameBoy::start_emulation()
 		cycles = 0;
 
 		if (!running) {
+			on_quit();
 			break;
 		}
 
@@ -88,6 +89,11 @@ void GameBoy::start_emulation()
 
 		}
 	}
+}
+
+void GameBoy::on_quit()
+{
+	cartridge->on_quit();
 }
 
 void GameBoy::tick_mcycle_no_cpu()

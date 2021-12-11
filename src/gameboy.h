@@ -46,6 +46,7 @@ class GameBoy {
 		void load_cartridge(std::string filename);
 		void map_bootrom(std::string filename);
 		void start_emulation();
+		void on_quit();
 
 		void tick_mcycle_no_cpu();
 
