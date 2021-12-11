@@ -79,7 +79,7 @@ void GameBoy::start_emulation()
 		
 
 		if (ticks_sleep <= 0) {
-			std::cerr << "too slow!!\n";
+			std::cerr << "too slow!! - over by " << (-ticks_sleep) / (freq / 1000.0) << "ms\n";
 			continue;
 		}
 		SDL_Delay(ticks_sleep / (freq / 1000.0) * 0.95);

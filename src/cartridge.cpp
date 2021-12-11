@@ -23,6 +23,8 @@ void Cartridge::load_cartridge_from_file(std::string filename)
 
 	cartridge_data.resize(MAX_CARTRIDGE_SIZE);
 
+	std::cerr << "reading cartridge rom file...\n";
+
 	std::ifstream f(filename, std::ios_base::binary);
 
 	f.read(reinterpret_cast<char *>(cartridge_data.data()), cartridge_data.size());
@@ -31,6 +33,8 @@ void Cartridge::load_cartridge_from_file(std::string filename)
 	if (bytes_read == 0) {
 		throw std::runtime_error("ERROR while reading cartridge file: file " + filename + " was 0 bytes");
 	}
+
+	std::cerr << "cartridge rom size - " << bytes_read << " bytes\n";
 
 	cartridge_data.resize(bytes_read);
 
@@ -43,6 +47,8 @@ void Cartridge::load_cartridge_from_file(std::string filename)
 
 void Cartridge::read_cartridge_header()
 {
+	std::cerr << "reading cartridge header...\n";
+
 	byte_t cartridge_type = read(0x147);
 	switch (cartridge_type) {
 		case 0x0:
@@ -81,6 +87,13 @@ void Cartridge::read_cartridge_header()
 			has_battery = true;
 			break;
 	}
+	std::cerr << "has battery - ";
+	if (has_battery) {
+		std::cerr << "true";
+	} else {
+		std::cerr << "false";
+	}
+	std::cerr << "\n";
 
 	byte_t ram_type = read(0x149);
 	switch (ram_type) {
@@ -103,6 +116,7 @@ void Cartridge::read_cartridge_header()
 			throw std::runtime_error("ERROR while reading cartridge: ram size " + std::to_string(ram_type) + " is invalid");
 	}
 	has_ram = ram_size() > 0;
+	std::cerr << "external ram - " << ram_size() << " bytes\n";
 }
 
 void Cartridge::load_cartridge_ram()
@@ -120,6 +134,8 @@ void Cartridge::load_cartridge_ram()
 	if (bytes_read == 0) {
 		throw std::runtime_error("ERROR while reading save file: file " + filename + "was 0 bytes");
 	}
+
+	std::cerr << "loaded external ram from save file: " << filename << "\n";
 }
 
 void Cartridge::save_cartridge_ram()
@@ -128,6 +144,8 @@ void Cartridge::save_cartridge_ram()
 
 	std::ofstream f(filename, std::ios_base::binary);
 	f.write(reinterpret_cast<const char *>(cartridge_ram.data()), cartridge_ram.size() * sizeof(decltype(cartridge_ram)::value_type));
+
+	std::cerr << "saved external ram to save file: " << filename << "\n";
 }
 
 std::string Cartridge::get_save_filename()

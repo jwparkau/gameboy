@@ -112,6 +112,8 @@ void Memory::map_bootrom(std::string filename)
 {
 	bootrom_data.resize(MAX_BOOTROM_SIZE);
 
+	std::cerr << "reading boot rom file...\n";
+
 	std::ifstream f(filename, std::ios_base::binary);
 	
 	f.read(reinterpret_cast<char *>(bootrom_data.data()), bootrom_data.size());
@@ -120,6 +122,8 @@ void Memory::map_bootrom(std::string filename)
 	if (bytes_read == 0) {
 		throw std::runtime_error("ERROR while reading boot rom file: file " + filename + "was 0 bytes");
 	}
+
+	std::cerr << "boot rom size - " << bytes_read << " bytes\n";
 
 	bootrom_data.resize(bytes_read);
 }
