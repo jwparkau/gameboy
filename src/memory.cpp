@@ -75,6 +75,8 @@ void Memory::write(addr_t addr, byte_t data)
 
 		if (addr == RSTAT) {
 			memory.at(addr) = (data & ~0x3) + (memory.at(addr) & 0x3);
+		} else if (addr == RLY) {
+			// do nothing
 		} else {
 			memory.at(addr) = data;
 		}
