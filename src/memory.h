@@ -22,12 +22,12 @@ enum io_reg {
 	RSCX = 0xFF43,
 	RLY = 0xFF44,
 	RLYC = 0xFF45,
+	RWY = 0xFF4A,
+	RWX = 0xFF4B,
 	RDMA = 0xFF46,
 	RBGP = 0xFF47,
 	ROBP0 = 0xFF48,
-	ROBP1 = 0xFF49,
-	RWY = 0xFF4A,
-	RWX = 0xFF4B
+	ROBP1 = 0xFF49
 };
 
 enum joypad_flags {

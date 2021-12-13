@@ -14,7 +14,9 @@
 #include <stdexcept>
 
 
+static const int CYCLES_PER_SECOND = 4194304;
 static const int CYCLES_PER_FRAME = 70224;
+static const double FRAMES_PER_SECOND = CYCLES_PER_SECOND / (double)CYCLES_PER_FRAME;
 
 GameBoy::GameBoy(Platform *platform) :
 	platform(platform),
@@ -46,7 +48,7 @@ void GameBoy::start_emulation()
 	uint64_t frame_start = 0;
 
 	uint64_t freq = SDL_GetPerformanceFrequency();
-	uint64_t frame_duration = freq / 60;
+	uint64_t frame_duration = freq / FRAMES_PER_SECOND;
 
 	if (frame_duration == 0) {
 		throw std::runtime_error("clock freq too small");
