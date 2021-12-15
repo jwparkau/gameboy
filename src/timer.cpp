@@ -18,7 +18,7 @@ void Timer::tick_mcycle()
 	div_tcycles += tcycles;
 
 	if (div_tcycles >= 256) {
-		div_tcycles -= 0;
+		div_tcycles -= 256;
 		t = memory->direct_read(RDIV);
 		if (t + 1 > 0xFF) {
 			memory->direct_write(RDIV, 0);
