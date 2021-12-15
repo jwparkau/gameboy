@@ -194,6 +194,7 @@ void PPU::do_pixel_draw()
 					} else if (ty < 8) {
 						tiledata = 0x8000 + 16 * (sprite.tile_index & 0xFE);
 					} else {
+						ty -= 8;
 						tiledata = 0x8000 + 16 * (sprite.tile_index | 0x01);
 					}
 
