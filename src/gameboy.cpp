@@ -1,5 +1,6 @@
 #include "gameboy.h"
 
+#include "apu.h"
 #include "cartridge.h"
 #include "cpu.h"
 #include "memory.h"
@@ -22,10 +23,12 @@ GameBoy::GameBoy(Platform *platform) :
 	platform(platform),
 	cartridge(std::make_unique<Cartridge>()),
 	memory(std::make_unique<Memory>(cartridge.get())),
+	apu(std::make_unique<APU>(memory.get())),
 	timer(std::make_unique<Timer>(memory.get())),
 	ppu(std::make_unique<PPU>(memory.get())),
 	cpu(std::make_unique<CPU>(this))
 {
+	memory->init_APU(apu.get());
 }
 
 GameBoy::~GameBoy() = default;
@@ -56,6 +59,9 @@ void GameBoy::start_emulation()
 
 	cpu->set_fake_boot_dmg_state();
 	platform->init_platform();
+	apu->audio_device = platform->audio_device;
+
+	SDL_PauseAudioDevice(platform->audio_device, 0);
 
 	while (true) {
 		frame_start = SDL_GetPerformanceCounter();
@@ -74,6 +80,7 @@ void GameBoy::start_emulation()
 		}
 
 		platform->render(ppu->framebuffer.data());
+		apu->queue_audio();
 
 		uint64_t frame_time = SDL_GetPerformanceCounter() - frame_start;
 		//std::cerr << "instantaneous fps: " << (double) freq / frame_time << "\n";
@@ -84,7 +91,7 @@ void GameBoy::start_emulation()
 			std::cerr << "too slow!! - over by " << (-ticks_sleep) / (freq / 1000.0) << "ms\n";
 			continue;
 		}
-		SDL_Delay(ticks_sleep / (freq / 1000.0) * 0.95);
+		//SDL_Delay(ticks_sleep / (freq / 1000.0) * 0.95);
 
 		// Busy wait
 		while (SDL_GetPerformanceCounter() < frame_start + frame_duration) {
@@ -102,6 +109,7 @@ void GameBoy::tick_mcycle_no_cpu()
 {
 	timer->tick_mcycle();
 	ppu->tick_mcycle();
+	apu->tick_mcycle();
 }
 
 void GameBoy::set_button(enum input_buttons button, bool down)

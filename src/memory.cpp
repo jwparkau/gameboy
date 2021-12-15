@@ -1,5 +1,6 @@
 #include "memory.h"
 
+#include "apu.h"
 #include "cartridge.h"
 
 #include <fstream>
@@ -23,6 +24,11 @@ Memory::Memory(Cartridge *cartridge) :
 {
 }
 
+void Memory::init_APU(APU *apu)
+{
+	this->apu = apu;
+}
+
 byte_t Memory::read(addr_t addr)
 {
 	if (addr < CARTRIDGE_ROM_END) {
@@ -43,6 +49,22 @@ byte_t Memory::read(addr_t addr)
 			} else {
 				return (rjoyp & ~0xF) + action_buttons;
 			}
+		} else if (addr == NR10) {
+			return memory.at(addr) | 0x80;
+		} else if (addr == NR11 || addr == NR21) {
+			return memory.at(addr) | 0x3F;
+		} else if (addr == NR13 || addr == NR23 || addr == NR31 || addr == NR33 || addr == NR41) {
+			return 0xFF;
+		} else if (addr == NR14 || addr == NR24 || addr == NR34 || addr == NR44) {
+			return memory.at(addr) | 0xBF;
+		} else if (addr == NR30) {
+			return memory.at(addr) | 0x7F;
+		} else if (addr == NR32) {
+			return memory.at(addr) | 0x9F;
+		} else if (0xFF27 <= addr && addr <= 0xFF2F) {
+			return 0xFF;
+		} else if (addr == NR52) {
+			return memory.at(addr) | 0x70;
 		} else {
 			return memory.at(addr);
 		}
@@ -71,12 +93,30 @@ void Memory::write(addr_t addr, byte_t data)
 	} else {
 		if (addr == RDMA) {
 			do_dma_transfer(data * 0x100);
+		} else if (addr == NR12 || addr == NR22 || addr == NR42) {
+			apu->on_envelope_write(addr);
+		} else if (addr == NR11 || addr == NR21 || addr == NR41) {
+			apu->on_length_write(addr);
+		} else if (addr == NR31) {
+			apu->on_length_write(addr);
+		} else if (addr == NR14 || addr == NR24 || addr == NR34 || addr == NR44) {
+			if ((data & CH_INIT)) {
+				apu->trigger(addr);
+			}
+		} else if (addr == NR13 || addr == NR23 || addr == NR33) {
+			apu->on_freq_write(addr);
+		} else if (addr == NR14 || addr == NR24 || addr == NR34) {
+			apu->on_freq_write(addr);
+		} else if (addr == NR43) {
+			apu->on_freq_write(addr);
 		}
 
 		if (addr == RSTAT) {
 			memory.at(addr) = (data & ~0x3) + (memory.at(addr) & 0x3);
 		} else if (addr == RLY) {
 			// do nothing
+		} else if (addr == NR52) {
+			memory.at(addr) = (data & 0xF0) + (memory.at(addr) & 0x0F);
 		} else {
 			memory.at(addr) = data;
 		}

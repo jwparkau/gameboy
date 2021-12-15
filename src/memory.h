@@ -27,7 +27,30 @@ enum io_reg {
 	RDMA = 0xFF46,
 	RBGP = 0xFF47,
 	ROBP0 = 0xFF48,
-	ROBP1 = 0xFF49
+	ROBP1 = 0xFF49,
+	NR10 = 0xFF10,
+	NR11 = 0xFF11,
+	NR12 = 0xFF12,
+	NR13 = 0xFF13,
+	NR14 = 0xFF14,
+	NR21 = 0xFF16,
+	NR22 = 0xFF17,
+	NR23 = 0xFF18,
+	NR24 = 0xFF19,
+	NR30 = 0xFF1A,
+	NR31 = 0xFF1B,
+	NR32 = 0xFF1C,
+	NR33 = 0xFF1D,
+	NR34 = 0xFF1E,
+	WAVE_PATTERN_RAM_START = 0xFF30,
+	WAVE_PATTERN_RAM_END = 0xFF40,
+	NR41 = 0xFF20,
+	NR42 = 0xFF21,
+	NR43 = 0xFF22,
+	NR44 = 0xFF23,
+	NR50 = 0xFF24,
+	NR51 = 0xFF25,
+	NR52 = 0xFF26
 };
 
 enum joypad_flags {
@@ -43,12 +66,38 @@ enum interrupt_flag {
 	INT_JOYPAD = 1 << 4
 };
 
+enum sound_status_flags {
+	CH1_ON = 0x1,
+	CH2_ON = 0x2,
+	CH3_ON = 0x4,
+	CH4_ON = 0x8,
+	SOUND_ON = 0x80
+};
+
+enum nrx4_flags {
+	CH_INIT = 0x80,
+	CH_LENGTH_ENABLE = 0x40,
+};
+
+enum sound_pan_flags {
+	CH1_RIGHT = 0x1,
+	CH2_RIGHT = 0x2,
+	CH3_RIGHT = 0x4,
+	CH4_RIGHT = 0x8,
+	CH1_LEFT = 0x10,
+	CH2_LEFT = 0x20,
+	CH3_LEFT = 0x40,
+	CH4_LEFT = 0x80
+};
+
+class APU;
 class Cartridge;
 
 class Memory {
 	public:
 		std::array<byte_t, 0x10000> memory{};
 		std::vector<byte_t> bootrom_data;
+		APU *apu{};
 		Cartridge *cartridge{};
 		bool timer_written = false;
 		bool bootrom_mapped = true;
@@ -57,6 +106,7 @@ class Memory {
 		byte_t direction_buttons{0xF};
 
 		Memory(Cartridge *Cartridge);
+		void init_APU(APU *apu);
 
 		byte_t read(addr_t addr);
 		void write(addr_t addr, byte_t data);

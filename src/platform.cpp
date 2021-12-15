@@ -12,7 +12,7 @@ static const std::string tag = "#Platform: ";
 
 void Platform::init_platform()
 {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
 		throw std::runtime_error("SDL init failed");
 	}
 
@@ -36,6 +36,24 @@ void Platform::init_platform()
 	if (!texture) {
 		throw std::runtime_error("SDL texture could not be created");
 	}
+
+	audio_spec_want.freq = 48000;
+	audio_spec_want.format = AUDIO_F32SYS;
+	audio_spec_want.channels = 2;
+	audio_spec_want.samples = 4096;
+	audio_spec_want.callback = nullptr;
+
+	/*
+	const int count = SDL_GetNumAudioDevices(0);
+	for (int i = 0; i < count; i++) {
+		printf("Audio device %d: %s\n", i, SDL_GetAudioDeviceName(i, 0));
+	}
+	*/
+
+	audio_device = SDL_OpenAudioDevice(nullptr, false, &audio_spec_want, &audio_spec_have, 0);
+	if (!audio_device) {
+		throw std::runtime_error("SDL audio error");
+	}
 }
 
 Platform::~Platform()
@@ -54,6 +72,11 @@ Platform::~Platform()
 		SDL_DestroyWindow(window);
 	}
 	window = nullptr;
+
+	if (audio_device) {
+		SDL_CloseAudioDevice(audio_device);
+	}
+	audio_device = 0;
 
 	SDL_Quit();
 }

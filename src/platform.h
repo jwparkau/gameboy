@@ -12,6 +12,9 @@ class Platform {
 		SDL_Window *window{};
 		SDL_Renderer *renderer{};
 		SDL_Texture *texture{};
+		SDL_AudioSpec audio_spec_want{};
+		SDL_AudioSpec audio_spec_have{};
+		SDL_AudioDeviceID audio_device{};
 
 		int width = 160;
 		int height = 144;

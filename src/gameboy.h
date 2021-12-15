@@ -10,6 +10,7 @@ class Memory;
 class CPU;
 class Timer;
 class PPU;
+class APU;
 
 /*
  * Represents the Game Boy as a whole.
@@ -36,6 +37,7 @@ class GameBoy {
 
 		std::unique_ptr<Cartridge> cartridge;
 		std::unique_ptr<Memory> memory;
+		std::unique_ptr<APU> apu;
 		std::unique_ptr<Timer> timer;
 		std::unique_ptr<PPU> ppu;
 		std::unique_ptr<CPU> cpu;

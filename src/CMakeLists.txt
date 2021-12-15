@@ -19,6 +19,7 @@ target_sources(gameboy PUBLIC
 	timer.cpp
 	types.cpp
 	ppu.cpp
+	apu.cpp
 )
 
 target_include_directories(gameboy PUBLIC
@@ -28,3 +29,4 @@ target_include_directories(gameboy PUBLIC
 target_link_libraries(gameboy SDL2::SDL2)
 
 add_subdirectory(MBC)
+add_subdirectory(Audio)
