@@ -10,6 +10,7 @@
 static const int FS_TICK_PERIOD = 8192;
 static const int FS_NUM_STEPS = 8;
 static const int TCYCLES_PER_SAMPLE = 87;
+static const int DELAY_AMOUNT = 624;
 
 APU::APU(Memory *memory) :
 	memory(memory),
@@ -17,7 +18,8 @@ APU::APU(Memory *memory) :
 	ch2(std::make_unique<Channel>(CH2, memory)),
 	ch3(std::make_unique<Channel>(CH3, memory)),
 	ch4(std::make_unique<Channel>(CH4, memory)),
-	sample_timer(TCYCLES_PER_SAMPLE)
+	sample_timer(TCYCLES_PER_SAMPLE),
+	delay(DELAY_AMOUNT)
 {
 }
 
@@ -125,16 +127,20 @@ void APU::tick_tcycle()
 	}
 
 	if (left_n != 0) {
-		left = left / (float)left_n;
+		//left = left / (float)left_n;
 	}
 	if (right_n != 0) {
-		right = right / (float)right_n;
+		//right = right / (float)right_n;
 	}
 
 	sample_timer--;
 	if (sample_timer == 0) {
 		sample_timer = TCYCLES_PER_SAMPLE;
 		push_samples(left, right);
+		if (delay > 0) {
+			delay--;
+			sample_timer++;
+		}
 	}
 
 }
@@ -250,6 +256,7 @@ void APU::queue_audio()
 		return;
 	}
 
-	SDL_QueueAudio(audio_device, buffer.data(), 1607 * sizeof(decltype(buffer)::value_type));
+	SDL_QueueAudio(audio_device, buffer.data(), 1600 * sizeof(decltype(buffer)::value_type));
 	buffer_index = 0;
+	delay = DELAY_AMOUNT;
 }

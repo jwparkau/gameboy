@@ -7,6 +7,7 @@
 #include "../memory.h"
 
 #include <iostream>
+#include <stdexcept>
 
 static const int WAVE_DUTY_TABLE[4][8] = {
 	{0, 0, 0, 0, 0, 0, 0, 1},
@@ -169,6 +170,8 @@ void Channel::set_freq_timer()
 				freq_low_addr = NR33;
 				freq_high_addr = NR34;
 				break;
+			default:
+				throw std::runtime_error("unreachable: ch must be CH1 CH2 CH3");
 		}
 
 		uint32_t freq = ((memory->direct_read(freq_high_addr) & 0x7) << 8) + memory->direct_read(freq_low_addr);

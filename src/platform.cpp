@@ -126,8 +126,10 @@ enum input_buttons Platform::translate_sym(SDL_Keycode sym)
 		case SDLK_z:
 			return B_B;
 		case SDLK_1:
+		case SDLK_RETURN:
 			return B_START;
 		case SDLK_2:
+		case SDLK_BACKSPACE:
 			return B_SELECT;
 		default:
 			return NOT_MAPPED;

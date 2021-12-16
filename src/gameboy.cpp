@@ -17,7 +17,8 @@
 
 static const int CYCLES_PER_SECOND = 4194304;
 static const int CYCLES_PER_FRAME = 70224;
-static const double FRAMES_PER_SECOND = CYCLES_PER_SECOND / (double)CYCLES_PER_FRAME;
+//static const double FRAMES_PER_SECOND = CYCLES_PER_SECOND / (double)CYCLES_PER_FRAME;
+static const double FRAMES_PER_SECOND = 60.0;
 
 GameBoy::GameBoy(Platform *platform) :
 	platform(platform),
@@ -91,7 +92,7 @@ void GameBoy::start_emulation()
 			std::cerr << "too slow!! - over by " << (-ticks_sleep) / (freq / 1000.0) << "ms\n";
 			continue;
 		}
-		//SDL_Delay(ticks_sleep / (freq / 1000.0) * 0.95);
+		SDL_Delay(ticks_sleep / (freq / 1000.0) * 0.95);
 
 		// Busy wait
 		while (SDL_GetPerformanceCounter() < frame_start + frame_duration) {

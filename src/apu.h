@@ -8,7 +8,6 @@
 #include <array>
 #include <memory>
 
-
 class Channel;
 
 class Memory;
@@ -33,6 +32,7 @@ class APU {
 		uint32_t sample_timer;
 		uint32_t tcycles = 0;
 		uint32_t frame_sequencer = 0;
+		uint32_t delay;
 
 		void tick_tcycle();
 		void tick_mcycle();
