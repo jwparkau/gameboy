@@ -3,6 +3,7 @@
 #include "MBC/mbc.h"
 #include "MBC/nombc.h"
 #include "MBC/mbc1.h"
+#include "MBC/mbc2.h"
 #include "MBC/mbc3.h"
 
 #include <fstream>
@@ -61,6 +62,11 @@ void Cartridge::read_cartridge_header()
 		case 0x3:
 			mbc = std::make_unique<MBC1>();
 			break;
+		case 0x5:
+		case 0x6:
+			mbc = std::make_unique<MBC2>();
+			is_mbc2 = true;
+			break;
 		case 0x0F:
 		case 0x10:
 		case 0x11:
@@ -98,6 +104,9 @@ void Cartridge::read_cartridge_header()
 	byte_t ram_type = read(0x149);
 	switch (ram_type) {
 		case 0:
+			if (is_mbc2) {
+				cartridge_ram.resize(0x200);
+			}
 		case 1:
 			break;
 		case 2:
@@ -116,7 +125,11 @@ void Cartridge::read_cartridge_header()
 			throw std::runtime_error("ERROR while reading cartridge: ram size " + std::to_string(ram_type) + " is invalid");
 	}
 	has_ram = ram_size() > 0;
-	std::cerr << "external ram - " << ram_size() << " bytes\n";
+	if (is_mbc2) {
+		std::cerr << "MBC2 ram - 512 * 4 bits\n";
+	} else {
+		std::cerr << "external ram - " << ram_size() << " bytes\n";
+	}
 }
 
 void Cartridge::load_cartridge_ram()

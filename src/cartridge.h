@@ -19,6 +19,7 @@ class Cartridge {
 		std::vector<byte_t> cartridge_ram;
 		bool has_ram = false;
 		bool has_battery = false;
+		bool is_mbc2 = false;
 		std::unique_ptr<MBC> mbc;
 		std::string cartridge_filename;
 

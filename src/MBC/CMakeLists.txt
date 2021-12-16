@@ -1,6 +1,7 @@
 target_sources(gameboy PUBLIC
 	nombc.cpp
 	mbc1.cpp
+	mbc2.cpp
 	mbc3.cpp
 )
 
